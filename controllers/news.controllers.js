@@ -1,4 +1,4 @@
-const { fetchAllTopics } = require("../models/news.models");
+const { fetchAllTopics, fetchArticleById } = require("../models/news.models");
 
 function getTopics(req, res, next) {
   fetchAllTopics()
@@ -8,4 +8,14 @@ function getTopics(req, res, next) {
     .catch((err) => next(err));
 }
 
-module.exports = { getTopics };
+function getArticleById(req, res, next) {
+  const { article_id: id } = req.params;
+
+  fetchArticleById(id)
+    .then((article) => {
+      res.status(200).send({ article });
+    })
+    .catch((err) => next(err));
+}
+
+module.exports = { getTopics, getArticleById };
