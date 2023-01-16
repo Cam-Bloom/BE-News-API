@@ -1,9 +1,14 @@
 const express = require("express");
-const { getTopics, getArticleById } = require("./controllers/news.controllers");
+const {
+  getTopics,
+  getArticles,
+  getArticleById,
+} = require("./controllers/news.controllers");
 
 const app = express();
 
 app.get("/api/topics", getTopics);
+app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id", getArticleById);
 
 // ERROR HANDLING
@@ -28,5 +33,10 @@ app.use((err, req, res, next) => {
 // INTERNAL SEVER ERROR
 app.use((err, req, res, next) => {
   res.status(500).send({ msg: "Internal Server Error" });
+});
+
+// CATCH BAD REQUEST
+app.all("*", (req, res) => {
+  app.status(404).send({ msg: "Bad Request" });
 });
 module.exports = app;
