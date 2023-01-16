@@ -14,6 +14,10 @@ function fetchArticleById(id) {
   FROM articles
   WHERE article_id = $1
   `;
+
+  return db.query(sqlQuery, [id]).then(({ rows: [article] }) => {
+    return article;
+  });
 }
 
 module.exports = { fetchAllTopics, fetchArticleById };

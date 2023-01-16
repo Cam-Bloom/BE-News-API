@@ -36,7 +36,7 @@ describe("/api/topics", () => {
 
 describe("/api/articles/:article_id", () => {
   describe("GET", () => {
-    test.skip('200: Should respond with a body of article with passed ID and corresponding properties" ', () => {
+    test('200: Should respond with a body of article with passed ID and corresponding properties" ', () => {
       const id = 3;
 
       return request(app)
