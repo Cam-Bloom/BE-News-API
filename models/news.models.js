@@ -18,7 +18,6 @@ function fetchAllArticles() {
     ORDER BY articles.created_at DESC;`;
 
   return db.query(sqlQuery).then(({ rows: articles }) => {
-    console.log(articles);
     return articles;
   });
 }
