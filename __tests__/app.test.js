@@ -55,5 +55,25 @@ describe("/api/articles/:article_id", () => {
           expect(article).toHaveProperty("article_img_url");
         });
     });
+
+    test("400: Should respond with Bad Request for invalid id", () => {
+      const id = "Cheese";
+
+      return request(app)
+        .get(`/api/articles/${id}`)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
+
+    test("404: Should respond with Not Found for id not in database ", () => {
+      return request(app)
+        .get(`/api/articles/999`)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Not Found");
+        });
+    });
   });
 });

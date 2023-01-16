@@ -16,7 +16,9 @@ function fetchArticleById(id) {
   `;
 
   return db.query(sqlQuery, [id]).then(({ rows: [article] }) => {
-    return article;
+    return article
+      ? article
+      : Promise.reject({ status: 404, msg: "Not Found" });
   });
 }
 
