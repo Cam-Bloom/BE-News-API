@@ -171,7 +171,9 @@ describe("/api/articles/:article_id/comments", () => {
       return request(app)
         .get(`/api/articles/${id}/comments`)
         .expect(404)
-        .then(({ body }) => {});
+        .then(({ body }) => {
+          expect(body.msg).toBe("Not Found");
+        });
     });
   });
 });
