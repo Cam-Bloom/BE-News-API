@@ -4,6 +4,7 @@ const {
   fetchArticleById,
   fetchCommentsByArticleId,
   createComment,
+  updateArticleVotes,
 } = require("../models/news.models");
 
 function getTopics(req, res, next) {
@@ -53,10 +54,22 @@ function postComment(req, res, next) {
     .catch(next);
 }
 
+function patchArticleVotes(req, res, next) {
+  const { article_id: id } = req.params;
+  const { body } = req;
+
+  Promise.all([updateArticleVotes(id, body), fetchArticleById(id)])
+    .then(([article]) => {
+      res.status(200).send({ article });
+    })
+    .catch(next);
+}
+
 module.exports = {
   getTopics,
   getArticles,
   getArticleById,
   postComment,
   getCommentsByArticleId,
+  patchArticleVotes,
 };

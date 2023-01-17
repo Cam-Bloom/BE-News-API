@@ -112,6 +112,77 @@ describe("/api/articles/:article_id", () => {
         });
     });
   });
+
+  describe("PATCH", () => {
+    test("200: Should respond with the updated object with incremented votes", () => {
+      const id = 1;
+
+      return request(app)
+        .patch(`/api/articles/${id}`)
+        .send({ inc_votes: 1 })
+        .expect(200)
+        .then(({ body }) => {
+          const article = body.article;
+
+          expect(article).toHaveProperty("author");
+          expect(article).toHaveProperty("title");
+          expect(article).toHaveProperty("article_id", id);
+          expect(article).toHaveProperty("body");
+          expect(article).toHaveProperty("topic");
+          expect(article).toHaveProperty("created_at");
+          expect(article).toHaveProperty("votes", 101);
+          expect(article).toHaveProperty("article_img_url");
+        });
+    });
+
+    test("400: Should respond with bad request for invalid body", () => {
+      const id = 1;
+
+      return request(app)
+        .patch(`/api/articles/${id}`)
+        .send({ ic_votes: 1 })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
+
+    test("404: Should respond with not found for an id which is not in the database", () => {
+      const id = 999;
+
+      return request(app)
+        .patch(`/api/articles/${id}`)
+        .send({ inc_votes: 1 })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Not Found");
+        });
+    });
+
+    test("400: Should respond with bad request for invalid id type", () => {
+      const id = "cheese";
+
+      return request(app)
+        .patch(`/api/articles/${id}`)
+        .send({ inc_votes: 1 })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
+
+    test("400: Should respond with bad request for invalid body", () => {
+      const id = 1;
+
+      return request(app)
+        .patch(`/api/articles/${id}`)
+        .send({ inc_votes: "cheese" })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
+  });
 });
 
 describe("/api/articles/:article_id/comments", () => {
