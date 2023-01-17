@@ -158,6 +158,30 @@ describe("/api/articles/:article_id", () => {
           expect(body.msg).toBe("Not Found");
         });
     });
+
+    test("400: Should respond with bad request for invalid id type", () => {
+      const id = "cheese";
+
+      return request(app)
+        .patch(`/api/articles/${id}`)
+        .send({ inc_votes: 1 })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
+
+    test("400: Should respond with bad request for invalid body", () => {
+      const id = 1;
+
+      return request(app)
+        .patch(`/api/articles/${id}`)
+        .send({ inc_votes: "cheese" })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
   });
 });
 
