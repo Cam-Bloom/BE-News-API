@@ -48,9 +48,30 @@ function fetchCommentsByArticleId(id) {
   });
 }
 
+function createComment(id, body) {
+  if (body.body && body.username) {
+    const inputValues = [body.body, body.username, id];
+
+    const sqlQuery = `
+    INSERT INTO comments
+    (body, author, article_id)
+    VALUES
+    ($1, $2, $3)
+    RETURNING *
+    `;
+
+    return db.query(sqlQuery, inputValues).then(({ rows: [comment] }) => {
+      return comment;
+    });
+  } else {
+    return Promise.reject({ status: 400, msg: "Bad Request" });
+  }
+}
+
 module.exports = {
   fetchAllTopics,
   fetchArticleById,
   fetchAllArticles,
   fetchCommentsByArticleId,
+  createComment,
 };
