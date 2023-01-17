@@ -15,7 +15,7 @@ function fetchAllArticles() {
     JOIN comments
     USING (article_id)
     GROUP BY 1,2,3,4,5,6,7
-    ORDER BY articles.created_at DESC;`;
+    ORDER BY created_at DESC;`;
 
   return db.query(sqlQuery).then(({ rows: articles }) => {
     return articles;
@@ -36,4 +36,21 @@ function fetchArticleById(id) {
   });
 }
 
-module.exports = { fetchAllTopics, fetchArticleById, fetchAllArticles };
+function fetchCommentsByArticleId(id) {
+  const sqlQuery = `
+  SELECT * 
+  FROM comments
+  WHERE article_id = $1
+  ORDER BY created_at DESC;
+  `;
+  return db.query(sqlQuery, [id]).then(({ rows: comments, rowCount }) => {
+    return comments;
+  });
+}
+
+module.exports = {
+  fetchAllTopics,
+  fetchArticleById,
+  fetchAllArticles,
+  fetchCommentsByArticleId,
+};

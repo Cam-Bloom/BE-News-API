@@ -2,6 +2,7 @@ const {
   fetchAllTopics,
   fetchAllArticles,
   fetchArticleById,
+  fetchCommentsByArticleId,
 } = require("../models/news.models");
 
 function getTopics(req, res, next) {
@@ -9,7 +10,7 @@ function getTopics(req, res, next) {
     .then((topics) => {
       res.status(200).send({ topics });
     })
-    .catch((err) => next(err));
+    .catch(next);
 }
 
 function getArticles(req, res, next) {
@@ -17,7 +18,7 @@ function getArticles(req, res, next) {
     .then((articles) => {
       res.status(200).send({ articles });
     })
-    .catch((err) => next(err));
+    .catch(next);
 }
 
 function getArticleById(req, res, next) {
@@ -27,7 +28,22 @@ function getArticleById(req, res, next) {
     .then((article) => {
       res.status(200).send({ article });
     })
-    .catch((err) => next(err));
+    .catch(next);
 }
 
-module.exports = { getTopics, getArticles, getArticleById };
+function getCommentsByArticleId(req, res, next) {
+  const { article_id: id } = req.params;
+
+  Promise.all([fetchCommentsByArticleId(id), fetchArticleById(id)])
+    .then(([comments]) => {
+      res.status(200).send({ comments });
+    })
+    .catch(next);
+}
+
+module.exports = {
+  getTopics,
+  getArticles,
+  getArticleById,
+  getCommentsByArticleId,
+};

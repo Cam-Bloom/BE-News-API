@@ -24,6 +24,7 @@ describe("/api/topics", () => {
           const topicsArr = body.topics;
 
           expect(Array.isArray(topicsArr)).toBe(true);
+          expect(topicsArr.length).toBe(3);
           topicsArr.forEach((topic) => {
             expect(topic).toHaveProperty("slug");
             expect(topic).toHaveProperty("description");
@@ -105,6 +106,70 @@ describe("/api/articles/:article_id", () => {
     test("404: Should respond with Not Found for id not in database ", () => {
       return request(app)
         .get(`/api/articles/999`)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Not Found");
+        });
+    });
+  });
+});
+
+describe("/api/articles/:article_id/comments", () => {
+  describe("GET", () => {
+    test("200: Should respond with comment objects with relevent properties for a passed articel parameter", () => {
+      const id = 3;
+
+      return request(app)
+        .get(`/api/articles/${id}/comments`)
+        .expect(200)
+        .then(({ body }) => {
+          const commentsArr = body.comments;
+
+          expect(Array.isArray(commentsArr)).toBe(true);
+          expect(commentsArr.length).toBe(2);
+
+          commentsArr.forEach((comment) => {
+            expect(comment).toHaveProperty("comment_id");
+            expect(comment).toHaveProperty("votes");
+            expect(comment).toHaveProperty("created_at");
+            expect(comment).toHaveProperty("author");
+            expect(comment).toHaveProperty("body");
+            expect(comment).toHaveProperty("article_id", id);
+          });
+        });
+    });
+
+    test("200: Should respond with empty for a valid article with no comments", () => {
+      const id = 8;
+
+      return request(app)
+        .get(`/api/articles/${id}/comments`)
+        .expect(200)
+        .then(({ body }) => {
+          const commentsArr = body.comments;
+
+          expect(commentsArr).toEqual([]);
+        });
+    });
+
+    test("200: Should respond with most recent comments first", () => {
+      const id = 3;
+
+      return request(app)
+        .get(`/api/articles/${id}/comments`)
+        .expect(200)
+        .then(({ body }) => {
+          const commentsArr = body.comments;
+
+          expect(commentsArr).toBeSortedBy("created_at", { descending: true });
+        });
+    });
+
+    test("404: Should respond with not found for an article id not in the db", () => {
+      const id = 999;
+
+      return request(app)
+        .get(`/api/articles/${id}/comments`)
         .expect(404)
         .then(({ body }) => {
           expect(body.msg).toBe("Not Found");
