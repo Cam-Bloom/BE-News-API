@@ -48,8 +48,7 @@ function createComment(id, body) {
     RETURNING *
     `;
 
-    return db.query(sqlQuery, inputValues).then(({ rows: [comment], rows }) => {
-      console.log(rows);
+    return db.query(sqlQuery, inputValues).then(({ rows: [comment] }) => {
       return comment;
     });
   } else {

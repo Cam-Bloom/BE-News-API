@@ -115,7 +115,7 @@ describe("/api/articles/:article_id", () => {
 
 describe("/api/articles/:article_id/comments", () => {
   describe("POST", () => {
-    test('200: Should respond with newly created comment object when passed a "body" and "username"', () => {
+    test('201: Should respond with newly created comment object when passed a "body" and "username"', () => {
       const id = 3;
 
       return request(app)
@@ -160,6 +160,36 @@ describe("/api/articles/:article_id/comments", () => {
         .send({
           body: "Cool new comment",
           username: "butter_bridge",
+        })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Not Found");
+        });
+    });
+
+    test("400: Should respond with bad request for no value on req", () => {
+      const id = 3;
+
+      return request(app)
+        .post(`/api/articles/${id}/comments`)
+        .send({
+          body: undefined,
+          username: undefined,
+        })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
+
+    test("404: Should respond with not found if username is not in database", () => {
+      const id = "1";
+
+      return request(app)
+        .post(`/api/articles/${id}/comments`)
+        .send({
+          body: "Cool new comment",
+          username: "random",
         })
         .expect(404)
         .then(({ body }) => {
