@@ -152,6 +152,19 @@ describe("/api/articles/:article_id/comments", () => {
         });
     });
 
+    test("200: Should respond with most recent comments first", () => {
+      const id = 3;
+
+      return request(app)
+        .get(`/api/articles/${id}/comments`)
+        .expect(200)
+        .then(({ body }) => {
+          const commentsArr = body.comments;
+
+          expect(commentsArr).toBeSortedBy("created_at", { descending: true });
+        });
+    });
+
     test("404: Should respond with not found for an article id not in the db", () => {
       const id = 999;
 
