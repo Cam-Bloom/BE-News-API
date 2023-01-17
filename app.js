@@ -3,13 +3,16 @@ const {
   getTopics,
   getArticles,
   getArticleById,
+  postComment,
 } = require("./controllers/news.controllers");
 
 const app = express();
 
+app.use(express.json());
 app.get("/api/topics", getTopics);
 app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id", getArticleById);
+app.post("/api/articles/:article_id/comments", postComment);
 
 // ERROR HANDLING
 // POSTGRES ERROR

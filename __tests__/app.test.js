@@ -112,3 +112,29 @@ describe("/api/articles/:article_id", () => {
     });
   });
 });
+
+describe("/api/articles/:article_id/comments", () => {
+  describe("POST", () => {
+    test.only('200: Should respond with newly created comment object when passed a "body" and "username"', () => {
+      const id = 3;
+
+      return request(app)
+        .post(`/api/articles/${id}/comments`)
+        .send({
+          body: "Cool new comment",
+          username: "butter_bridge",
+        })
+        .expect(201)
+        .then(({ body }) => {
+          const comment = body.comment;
+
+          expect(comment).toHaveProperty("comment_id");
+          expect(comment).toHaveProperty("votes");
+          expect(comment).toHaveProperty("created_at");
+          expect(comment).toHaveProperty("author", "butter_bridge");
+          expect(comment).toHaveProperty("body", "Cool new comment");
+          expect(comment).toHaveProperty("article_id", id);
+        });
+    });
+  });
+});

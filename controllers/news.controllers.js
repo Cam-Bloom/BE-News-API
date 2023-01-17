@@ -2,6 +2,7 @@ const {
   fetchAllTopics,
   fetchAllArticles,
   fetchArticleById,
+  createComment,
 } = require("../models/news.models");
 
 function getTopics(req, res, next) {
@@ -30,4 +31,15 @@ function getArticleById(req, res, next) {
     .catch((err) => next(err));
 }
 
-module.exports = { getTopics, getArticles, getArticleById };
+function postComment(req, res, next) {
+  const { article_id: id } = req.params;
+  const { body } = req;
+
+  createComment(id, body)
+    .then((comment) => {
+      res.status(201).send({ comment });
+    })
+    .catch(next);
+}
+
+module.exports = { getTopics, getArticles, getArticleById, postComment };

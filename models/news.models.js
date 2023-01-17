@@ -36,4 +36,26 @@ function fetchArticleById(id) {
   });
 }
 
-module.exports = { fetchAllTopics, fetchArticleById, fetchAllArticles };
+function createComment(id, body) {
+  const inputValues = [body.body, body.username, id];
+
+  const sqlQuery = `
+  INSERT INTO comments
+  (body, author, article_id)
+  VALUES
+  ($1, $2, $3)
+  RETURNING *
+  `;
+
+  return db.query(sqlQuery, inputValues).then(({ rows: [comment] }) => {
+    console.log(comment);
+    return comment;
+  });
+}
+
+module.exports = {
+  fetchAllTopics,
+  fetchArticleById,
+  fetchAllArticles,
+  createComment,
+};
