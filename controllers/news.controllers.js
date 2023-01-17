@@ -45,9 +45,9 @@ function getCommentsByArticleId(req, res, next) {
 function patchArticleVotes(req, res, next) {
   const { article_id: id } = req.params;
   const { body } = req;
-  console.log(body);
-  updateArticleVotes(id, body)
-    .then((article) => {
+
+  Promise.all([updateArticleVotes(id, body), fetchArticleById(id)])
+    .then(([article]) => {
       res.status(200).send({ article });
     })
     .catch(next);

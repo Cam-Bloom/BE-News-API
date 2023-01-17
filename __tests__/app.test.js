@@ -134,6 +134,30 @@ describe("/api/articles/:article_id", () => {
           expect(article).toHaveProperty("article_img_url");
         });
     });
+
+    test("400: Should respond with bad request for invalid body", () => {
+      const id = 1;
+
+      return request(app)
+        .patch(`/api/articles/${id}`)
+        .send({ ic_votes: 1 })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
+
+    test("404: Should respond with not found for an id which is not in the database", () => {
+      const id = 999;
+
+      return request(app)
+        .patch(`/api/articles/${id}`)
+        .send({ inc_votes: 1 })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Not Found");
+        });
+    });
   });
 });
 

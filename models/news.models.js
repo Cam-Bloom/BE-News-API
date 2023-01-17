@@ -49,17 +49,21 @@ function fetchCommentsByArticleId(id) {
 }
 
 function updateArticleVotes(id, { inc_votes }) {
-  const valueArr = [inc_votes, id];
+  if (inc_votes) {
+    const valueArr = [inc_votes, id];
 
-  const sqlQuery = `
-  UPDATE articles
-  SET votes = votes + $1
-  WHERE article_id = $2
-  RETURNING *`;
+    const sqlQuery = `
+    UPDATE articles
+    SET votes = votes + $1
+    WHERE article_id = $2
+    RETURNING *`;
 
-  return db.query(sqlQuery, valueArr).then(({ rows: [updatedArticle] }) => {
-    return updatedArticle;
-  });
+    return db.query(sqlQuery, valueArr).then(({ rows: [updatedArticle] }) => {
+      return updatedArticle;
+    });
+  } else {
+    return Promise.reject({ status: 400, msg: "Bad Request" });
+  }
 }
 
 module.exports = {
