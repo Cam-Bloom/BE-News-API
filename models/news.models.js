@@ -37,20 +37,24 @@ function fetchArticleById(id) {
 }
 
 function createComment(id, body) {
-  const inputValues = [body.body, body.username, id];
+  if (body.body && body.username) {
+    const inputValues = [body.body, body.username, id];
 
-  const sqlQuery = `
-  INSERT INTO comments
-  (body, author, article_id)
-  VALUES
-  ($1, $2, $3)
-  RETURNING *
-  `;
+    const sqlQuery = `
+    INSERT INTO comments
+    (body, author, article_id)
+    VALUES
+    ($1, $2, $3)
+    RETURNING *
+    `;
 
-  return db.query(sqlQuery, inputValues).then(({ rows: [comment] }) => {
-    console.log(comment);
-    return comment;
-  });
+    return db.query(sqlQuery, inputValues).then(({ rows: [comment], rows }) => {
+      console.log(rows);
+      return comment;
+    });
+  } else {
+    return Promise.reject({ status: 400, msg: "Bad Request" });
+  }
 }
 
 module.exports = {
