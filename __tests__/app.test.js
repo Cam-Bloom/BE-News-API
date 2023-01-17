@@ -24,6 +24,7 @@ describe("/api/topics", () => {
           const topicsArr = body.topics;
 
           expect(Array.isArray(topicsArr)).toBe(true);
+          expect(topicsArr.length).toBe(3);
           topicsArr.forEach((topic) => {
             expect(topic).toHaveProperty("slug");
             expect(topic).toHaveProperty("description");
@@ -110,5 +111,11 @@ describe("/api/articles/:article_id", () => {
           expect(body.msg).toBe("Not Found");
         });
     });
+  });
+});
+
+describe("/api/articles/:article_id/comments", () => {
+  describe("GET", () => {
+    test("200:", () => {});
   });
 });
