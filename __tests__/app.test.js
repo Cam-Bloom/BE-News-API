@@ -138,5 +138,27 @@ describe("/api/articles/:article_id/comments", () => {
           });
         });
     });
+
+    test("200: Should respond with empty for a valid article with no comments", () => {
+      const id = 8;
+
+      return request(app)
+        .get(`/api/articles/${id}/comments`)
+        .expect(200)
+        .then(({ body }) => {
+          const commentsArr = body.comments;
+
+          expect(commentsArr).toEqual([]);
+        });
+    });
+
+    test("404: Should respond with not found for an article id not in the db", () => {
+      const id = 999;
+
+      return request(app)
+        .get(`/api/articles/${id}/comments`)
+        .expect(404)
+        .then(({ body }) => {});
+    });
   });
 });

@@ -42,7 +42,7 @@ function fetchCommentsByArticleId(id) {
   FROM comments
   WHERE article_id = $1
   `;
-  return db.query(sqlQuery, [id]).then(({ rows: comments }) => {
+  return db.query(sqlQuery, [id]).then(({ rows: comments, rowCount }) => {
     return comments;
   });
 }

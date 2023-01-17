@@ -33,8 +33,9 @@ function getArticleById(req, res, next) {
 
 function getCommentsByArticleId(req, res, next) {
   const { article_id: id } = req.params;
-  fetchCommentsByArticleId(id)
-    .then((comments) => {
+
+  Promise.all([fetchCommentsByArticleId(id), fetchArticleById(id)])
+    .then(([comments]) => {
       res.status(200).send({ comments });
     })
     .catch(next);
