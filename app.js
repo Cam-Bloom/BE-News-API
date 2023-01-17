@@ -3,6 +3,7 @@ const {
   getTopics,
   getArticles,
   getArticleById,
+  getCommentsByArticleId,
 } = require("./controllers/news.controllers");
 const { postgresErr, customErr, internalErr } = require("./errorHandlers");
 
@@ -11,6 +12,7 @@ const app = express();
 app.get("/api/topics", getTopics);
 app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id", getArticleById);
+app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 
 // ERROR HANDLING
 

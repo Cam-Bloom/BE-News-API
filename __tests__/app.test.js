@@ -116,6 +116,27 @@ describe("/api/articles/:article_id", () => {
 
 describe("/api/articles/:article_id/comments", () => {
   describe("GET", () => {
-    test("200:", () => {});
+    test("200: Should respond with comment objects with relevent properties for a passed articel parameter", () => {
+      const id = 3;
+
+      return request(app)
+        .get(`/api/articles/${id}/comments`)
+        .expect(200)
+        .then(({ body }) => {
+          const commentsArr = body.comments;
+
+          expect(Array.isArray(commentsArr)).toBe(true);
+          expect(commentsArr.length).toBe(2);
+
+          commentsArr.forEach((comment) => {
+            expect(comment).toHaveProperty("comment_id");
+            expect(comment).toHaveProperty("votes");
+            expect(comment).toHaveProperty("created_at");
+            expect(comment).toHaveProperty("author");
+            expect(comment).toHaveProperty("body");
+            expect(comment).toHaveProperty("article_id", id);
+          });
+        });
+    });
   });
 });

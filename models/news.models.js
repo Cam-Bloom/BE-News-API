@@ -36,4 +36,20 @@ function fetchArticleById(id) {
   });
 }
 
-module.exports = { fetchAllTopics, fetchArticleById, fetchAllArticles };
+function fetchCommentsByArticleId(id) {
+  const sqlQuery = `
+  SELECT * 
+  FROM comments
+  WHERE article_id = $1
+  `;
+  return db.query(sqlQuery, [id]).then(({ rows: comments }) => {
+    return comments;
+  });
+}
+
+module.exports = {
+  fetchAllTopics,
+  fetchArticleById,
+  fetchAllArticles,
+  fetchCommentsByArticleId,
+};
