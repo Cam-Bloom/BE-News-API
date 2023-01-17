@@ -3,6 +3,7 @@ const {
   fetchAllArticles,
   fetchArticleById,
   fetchCommentsByArticleId,
+  fetchAllUsers,
 } = require("../models/news.models");
 
 function getTopics(req, res, next) {
@@ -41,9 +42,18 @@ function getCommentsByArticleId(req, res, next) {
     .catch(next);
 }
 
+function getUsers(req, res, next) {
+  fetchAllUsers()
+    .then((users) => {
+      res.status(200).send({ users });
+    })
+    .catch(next);
+}
+
 module.exports = {
   getTopics,
   getArticles,
   getArticleById,
   getCommentsByArticleId,
+  getUsers,
 };
