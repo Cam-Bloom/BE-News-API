@@ -48,9 +48,24 @@ function fetchCommentsByArticleId(id) {
   });
 }
 
+function updateArticleVotes(id, { inc_votes }) {
+  const valueArr = [inc_votes, id];
+
+  const sqlQuery = `
+  UPDATE articles
+  SET votes = votes + $1
+  WHERE article_id = $2
+  RETURNING *`;
+
+  return db.query(sqlQuery, valueArr).then(({ rows: [updatedArticle] }) => {
+    return updatedArticle;
+  });
+}
+
 module.exports = {
   fetchAllTopics,
   fetchArticleById,
   fetchAllArticles,
   fetchCommentsByArticleId,
+  updateArticleVotes,
 };
