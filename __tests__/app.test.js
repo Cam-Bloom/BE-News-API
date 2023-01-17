@@ -63,8 +63,45 @@ describe("/api/articles", () => {
         .expect(200)
         .then(({ body }) => {
           const articleArr = body.articles;
-
           expect(articleArr).toBeSortedBy("created_at", { descending: true });
+        });
+    });
+
+    test("200: Should respond with filtered results by topic when passed a topic query", () => {
+      return request(app)
+        .get("/api/articles?topic=mitch")
+        .expect(200)
+        .then(({ body }) => {
+          const articleArr = body.articles;
+
+          expect(Array.isArray(articleArr)).toBe(true);
+          articleArr.forEach((topic) => {
+            expect(topic).toHaveProperty("topic", "mitch");
+          });
+        });
+    });
+
+    test("200: Should respond with sorted by any valid category", () => {
+      return request(app)
+        .get("/api/articles?sort_by=votes")
+        .expect(200)
+        .then(({ body }) => {
+          const articleArr = body.articles;
+
+          expect(Array.isArray(articleArr)).toBe(true);
+          expect(articleArr).toBeSortedBy("votes", { descending: true });
+        });
+    });
+
+    test("200: Should respond with sorted by ascending or descending by query", () => {
+      return request(app)
+        .get("/api/articles?order=ASC")
+        .expect(200)
+        .then(({ body }) => {
+          const articleArr = body.articles;
+
+          expect(Array.isArray(articleArr)).toBe(true);
+          expect(articleArr).toBeSortedBy("created_at", { ascending: true });
         });
     });
   });
