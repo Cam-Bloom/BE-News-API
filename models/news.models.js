@@ -1,4 +1,5 @@
 const db = require("../db/connection");
+const { queryFormat } = require("./utils.models");
 
 function fetchAllTopics() {
   const sqlQuery = `SELECT * FROM topics`;
@@ -8,17 +9,22 @@ function fetchAllTopics() {
   });
 }
 
-function fetchAllArticles() {
-  const sqlQuery = `
+function fetchAllArticles(query) {
+  let sqlQuery = `
     SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id) AS comment_count
     FROM articles
     JOIN comments
-    USING (article_id)
-    GROUP BY 1,2,3,4,5,6,7
-    ORDER BY created_at DESC;`;
+    USING (article_id)`;
 
-  return db.query(sqlQuery).then(({ rows: articles }) => {
-    return articles;
+  const { valueArr, sqlString, validationErr } = queryFormat(query);
+
+  if (validationErr) return validationErr;
+  if (sqlString) sqlQuery += sqlString;
+
+  return db.query(sqlQuery, valueArr).then(({ rows: articles, rowCount }) => {
+    return rowCount === 0
+      ? Promise.reject({ status: 404, msg: "Not Found" })
+      : articles;
   });
 }
 

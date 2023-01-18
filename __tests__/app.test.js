@@ -63,8 +63,87 @@ describe("/api/articles", () => {
         .expect(200)
         .then(({ body }) => {
           const articleArr = body.articles;
-
           expect(articleArr).toBeSortedBy("created_at", { descending: true });
+        });
+    });
+
+    test("200: Should respond with filtered results by topic when passed a topic query", () => {
+      return request(app)
+        .get("/api/articles?topic=mitch")
+        .expect(200)
+        .then(({ body }) => {
+          const articleArr = body.articles;
+
+          expect(Array.isArray(articleArr)).toBe(true);
+          articleArr.forEach((topic) => {
+            expect(topic).toHaveProperty("topic", "mitch");
+          });
+        });
+    });
+
+    test("200: Should respond with sorted by any valid category", () => {
+      return request(app)
+        .get("/api/articles?sort_by=votes")
+        .expect(200)
+        .then(({ body }) => {
+          const articleArr = body.articles;
+
+          expect(Array.isArray(articleArr)).toBe(true);
+          expect(articleArr).toBeSortedBy("votes", { descending: true });
+        });
+    });
+
+    test("200: Should respond with sorted by ascending or descending by query", () => {
+      return request(app)
+        .get("/api/articles?order=ASC")
+        .expect(200)
+        .then(({ body }) => {
+          const articleArr = body.articles;
+
+          expect(Array.isArray(articleArr)).toBe(true);
+          expect(articleArr).toBeSortedBy("created_at", { ascending: true });
+        });
+    });
+
+    test("200: Should be able to handle multiple queries", () => {
+      return request(app)
+        .get("/api/articles?order=ASC&sort_by=votes&topic=mitch")
+        .expect(200)
+        .then(({ body }) => {
+          const articleArr = body.articles;
+
+          expect(Array.isArray(articleArr)).toBe(true);
+          expect(articleArr).toBeSortedBy("votes", { ascending: true });
+          articleArr.forEach((topic) => {
+            expect(topic).toHaveProperty("topic", "mitch");
+          });
+        });
+    });
+
+    test("400: Should recieve bad request if query key is invalid", () => {
+      return request(app)
+        .get("/api/articles?oder=ASC")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
+
+    test("400: Should recieve bad request if query value is invalid", () => {
+      return request(app)
+        .get("/api/articles?order=bananas")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
+
+    test("404: Should recieve not found when a valid but not existant topic ", () => {
+      return request(app)
+        .get("/api/articles?topic=randomTopic")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Not Found");
         });
     });
   });
