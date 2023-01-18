@@ -6,6 +6,7 @@ const {
   getCommentsByArticleId,
   postComment,
   patchArticleVotes,
+  getUsers,
 } = require("./controllers/news.controllers");
 const { postgresErr, customErr, internalErr } = require("./errorHandlers");
 
@@ -18,6 +19,7 @@ app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 app.post("/api/articles/:article_id/comments", postComment);
 app.patch("/api/articles/:article_id", patchArticleVotes);
+app.get("/api/users", getUsers);
 
 // ERROR HANDLING
 

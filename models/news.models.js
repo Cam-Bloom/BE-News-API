@@ -82,6 +82,16 @@ function updateArticleVotes(id, { inc_votes }) {
   });
 }
 
+function fetchAllUsers() {
+  const sqlQuery = `
+  SELECT * 
+  FROM users`;
+
+  return db.query(sqlQuery).then(({ rows: users }) => {
+    return users;
+  });
+}
+
 module.exports = {
   fetchAllTopics,
   fetchArticleById,
@@ -89,4 +99,5 @@ module.exports = {
   fetchCommentsByArticleId,
   createComment,
   updateArticleVotes,
+  fetchAllUsers,
 };
