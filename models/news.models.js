@@ -13,7 +13,7 @@ function fetchAllArticles(query) {
   let sqlQuery = `
     SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id) AS comment_count
     FROM articles
-    JOIN comments
+    LEFT JOIN comments
     USING (article_id)`;
 
   const { valueArr, sqlString, validationErr } = queryFormat(query);
@@ -30,9 +30,12 @@ function fetchAllArticles(query) {
 
 function fetchArticleById(id) {
   const sqlQuery = `
-  SELECT author, title, article_id, body, topic, created_at, votes, article_img_url
+  SELECT articles.author, articles.title, articles.article_id, articles.body, articles.topic, articles.created_at, articles.votes, article_img_url, COUNT(comments.article_id) AS comment_count
   FROM articles
+  LEFT JOIN comments
+  USING (article_id)
   WHERE article_id = $1
+  GROUP BY 1,2,3,4,5,6,7
   `;
 
   return db.query(sqlQuery, [id]).then(({ rows: [article] }) => {
