@@ -111,6 +111,19 @@ describe("/api/articles/:article_id", () => {
           expect(body.msg).toBe("Not Found");
         });
     });
+
+    test("200: Should respond with article with a comment count property", () => {
+      const id = 1;
+
+      return request(app)
+        .get(`/api/articles/${id}`)
+        .expect(200)
+        .then(({ body }) => {
+          const article = body.article;
+
+          expect(article).toHaveProperty("comment_count");
+        });
+    });
   });
 
   describe("PATCH", () => {
