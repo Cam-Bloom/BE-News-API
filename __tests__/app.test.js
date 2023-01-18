@@ -104,6 +104,39 @@ describe("/api/articles", () => {
           expect(articleArr).toBeSortedBy("created_at", { ascending: true });
         });
     });
+
+    test("200: Should be able to handle multiple queries", () => {
+      return request(app)
+        .get("/api/articles?order=ASC&sort_by=votes&topic=mitch")
+        .expect(200)
+        .then(({ body }) => {
+          const articleArr = body.articles;
+
+          expect(Array.isArray(articleArr)).toBe(true);
+          expect(articleArr).toBeSortedBy("votes", { ascending: true });
+          articleArr.forEach((topic) => {
+            expect(topic).toHaveProperty("topic", "mitch");
+          });
+        });
+    });
+
+    test("400: Should recieve bad request if query key is invalid", () => {
+      return request(app)
+        .get("/api/articles?oder=ASC")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
+
+    test("400: Should recieve bad request if query value is invalid", () => {
+      return request(app)
+        .get("/api/articles?order=AC")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
   });
 });
 

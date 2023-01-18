@@ -16,12 +16,12 @@ function fetchAllArticles(query) {
     JOIN comments
     USING (article_id)`;
 
-  const { valueArr, sqlString } = queryFormat(query);
+  const { valueArr, sqlString, validationErr } = queryFormat(query);
 
-  sqlQuery += sqlString;
-  console.log(valueArr);
+  if (validationErr) return validationErr;
+  if (sqlString) sqlQuery += sqlString;
+
   return db.query(sqlQuery, valueArr).then(({ rows: articles }) => {
-    console.log(articles);
     return articles;
   });
 }
