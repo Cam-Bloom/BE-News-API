@@ -15,7 +15,7 @@ describe("queryFormat", () => {
     const output = queryFormat(input);
     const expectedOutput = {
       valueArr: ["mitch"],
-      sqlString: `WHERE articles.topic = $1GROUP BY 1,2,3,4,5,6,7ORDER BY created_at DESC;`,
+      sqlString: `WHERE articles.topic = $1GROUP BY articles.article_id ORDER BY created_at DESC;`,
     };
 
     expect(output.valueArr).toEqual(expectedOutput.valueArr);
@@ -28,7 +28,7 @@ describe("queryFormat", () => {
     const output = queryFormat(input);
     const expectedOutput = {
       valueArr: [],
-      sqlString: `GROUP BY 1,2,3,4,5,6,7ORDER BY votes DESC;`,
+      sqlString: `GROUP BY articles.article_id ORDER BY votes DESC;`,
     };
 
     expect(output.valueArr).toEqual(expectedOutput.valueArr);
@@ -41,7 +41,7 @@ describe("queryFormat", () => {
     const output = queryFormat(input);
     const expectedOutput = {
       valueArr: [],
-      sqlString: `GROUP BY 1,2,3,4,5,6,7ORDER BY created_at ASC;`,
+      sqlString: `GROUP BY articles.article_id ORDER BY created_at ASC;`,
     };
 
     expect(output.valueArr).toEqual(expectedOutput.valueArr);
@@ -54,7 +54,7 @@ describe("queryFormat", () => {
     const output = queryFormat(input);
     const expectedOutput = {
       valueArr: ["mitch"],
-      sqlString: `WHERE articles.topic = $1GROUP BY 1,2,3,4,5,6,7ORDER BY votes ASC;`,
+      sqlString: `WHERE articles.topic = $1GROUP BY articles.article_id ORDER BY votes ASC;`,
     };
     expect(output.valueArr).toEqual(expectedOutput.valueArr);
     expect(output.sqlString).toEqual(expectedOutput.sqlString);

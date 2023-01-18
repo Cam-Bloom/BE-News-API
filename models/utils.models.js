@@ -35,7 +35,7 @@ function queryFormat(query) {
     valueArr.push(query.topic);
   }
 
-  sqlString += "GROUP BY 1,2,3,4,5,6,7";
+  sqlString += "GROUP BY articles.article_id ";
 
   if (query.order && query.sort_by) {
     sqlString += `ORDER BY ${query.sort_by} ${query.order};`;

@@ -21,8 +21,10 @@ function fetchAllArticles(query) {
   if (validationErr) return validationErr;
   if (sqlString) sqlQuery += sqlString;
 
-  return db.query(sqlQuery, valueArr).then(({ rows: articles }) => {
-    return articles;
+  return db.query(sqlQuery, valueArr).then(({ rows: articles, rowCount }) => {
+    return rowCount === 0
+      ? Promise.reject({ status: 404, msg: "Not Found" })
+      : articles;
   });
 }
 

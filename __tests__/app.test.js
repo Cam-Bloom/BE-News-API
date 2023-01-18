@@ -131,10 +131,19 @@ describe("/api/articles", () => {
 
     test("400: Should recieve bad request if query value is invalid", () => {
       return request(app)
-        .get("/api/articles?order=AC")
+        .get("/api/articles?order=bananas")
         .expect(400)
         .then(({ body }) => {
           expect(body.msg).toBe("Bad Request");
+        });
+    });
+
+    test("404: Should recieve not found when a valid but not existant topic ", () => {
+      return request(app)
+        .get("/api/articles?topic=randomTopic")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Not Found");
         });
     });
   });
