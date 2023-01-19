@@ -447,3 +447,43 @@ describe("/api/users", () => {
     });
   });
 });
+
+describe("/api/comments/:comment_id", () => {
+  describe("DELETE", () => {
+    test("204: Should respond with no content and item should be deleted", () => {
+      const id = 1;
+
+      return request(app)
+        .delete(`/api/comments/${id}`)
+        .expect(204)
+        .then(() => {
+          return db.query(`SELECT * FROM comments WHERE comment_id = ${id}`);
+        })
+        .then(({ rowCount }) => {
+          expect(rowCount).toBe(0);
+        });
+    });
+
+    test("400: Should respond with bad request for a invalid id", () => {
+      const id = "cheese";
+
+      return request(app)
+        .delete(`/api/comments/${id}`)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
+
+    test("404: Should respond with not found for item not in the database", () => {
+      const id = 100000;
+
+      return request(app)
+        .delete(`/api/comments/${id}`)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Not Found");
+        });
+    });
+  });
+});
