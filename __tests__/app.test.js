@@ -164,6 +164,7 @@ describe("/api", () => {
     });
   });
 });
+
 describe("/api/topics", () => {
   describe("GET", () => {
     test('200: Should respond with a body of topic objects in an array, with "slug" and "description properties"', () => {
@@ -184,6 +185,31 @@ describe("/api/topics", () => {
   });
 });
 
+describe("/api/topics/:slug", () => {
+  describe("GET", () => {
+    test("200: Should get topic by slug", () => {
+      return request(app)
+        .get("/api/topics/mitch")
+        .expect(200)
+        .then(({ body }) => {
+          const topic = body.topic;
+
+          expect(topic).toHaveProperty("slug", "mitch");
+          expect(topic).toHaveProperty("description");
+        });
+    });
+
+    test("404: Should return not found if the slug is not in the database", () => {
+      return request(app)
+        .get("/api/topics/notatopic")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Not Found");
+        });
+    });
+  });
+});
+
 describe("/api/articles", () => {
   describe("GET", () => {
     test('200: Should respond with a body of article objects in an array, with corresponding properties"', () => {
@@ -194,15 +220,15 @@ describe("/api/articles", () => {
           const articleArr = body.articles;
 
           expect(Array.isArray(articleArr)).toBe(true);
-          articleArr.forEach((topic) => {
-            expect(topic).toHaveProperty("author");
-            expect(topic).toHaveProperty("title");
-            expect(topic).toHaveProperty("article_id");
-            expect(topic).toHaveProperty("topic");
-            expect(topic).toHaveProperty("created_at");
-            expect(topic).toHaveProperty("votes");
-            expect(topic).toHaveProperty("article_img_url");
-            expect(topic).toHaveProperty("comment_count");
+          articleArr.forEach((article) => {
+            expect(article).toHaveProperty("author");
+            expect(article).toHaveProperty("title");
+            expect(article).toHaveProperty("article_id");
+            expect(article).toHaveProperty("topic");
+            expect(article).toHaveProperty("created_at");
+            expect(article).toHaveProperty("votes");
+            expect(article).toHaveProperty("article_img_url");
+            expect(article).toHaveProperty("comment_count");
           });
         });
     });
@@ -271,6 +297,65 @@ describe("/api/articles", () => {
     test("404: Should recieve not found when a valid but not existant topic ", () => {
       return request(app)
         .get("/api/articles?topic=randomTopic")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Not Found");
+        });
+    });
+  });
+
+  describe("POST", () => {
+    test("201: Should create a new article and respond with the corresponding object ", () => {
+      return request(app)
+        .post("/api/articles")
+        .send({
+          author: "lurker",
+          title: "the best article",
+          body: "abcdef",
+          topic: "mitch",
+          article_img_url: "www.gooodle.com",
+        })
+        .expect(201)
+        .then(({ body }) => {
+          const article = body.article;
+
+          expect(article).toHaveProperty("author");
+          expect(article).toHaveProperty("title");
+          expect(article).toHaveProperty("article_id");
+          expect(article).toHaveProperty("topic");
+          expect(article).toHaveProperty("created_at");
+          expect(article).toHaveProperty("votes");
+          expect(article).toHaveProperty("article_img_url");
+          expect(article).toHaveProperty("comment_count");
+        });
+    });
+
+    test("404: Should return bad request for invalid value on topic not in database", () => {
+      return request(app)
+        .post("/api/articles")
+        .send({
+          author: "lurker",
+          title: "the best article",
+          body: "abcdef",
+          topic: "notatopic",
+          article_img_url: "www.gooodle.com",
+        })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Not Found");
+        });
+    });
+
+    test("404: Should return bad request for invalid value on author not in database", () => {
+      return request(app)
+        .post("/api/articles")
+        .send({
+          author: "luer",
+          title: "the best article",
+          body: "abcdef",
+          topic: "notatopic",
+          article_img_url: "www.gooodle.com",
+        })
         .expect(404)
         .then(({ body }) => {
           expect(body.msg).toBe("Not Found");
