@@ -21,7 +21,7 @@ describe("/api", () => {
         .get("/api")
         .expect(200)
         .then(({ body }) => {
-          expect(body).toEqual({
+          const expected = {
             "GET /api": {
               description:
                 "serves up a json representation of all the available endpoints of the api",
@@ -158,7 +158,8 @@ describe("/api", () => {
               queries: [],
               exampleResponse: {},
             },
-          });
+          };
+          expect(body).toEqual(expected);
         });
     });
   });
@@ -607,6 +608,75 @@ describe("/api/comments/:comment_id", () => {
 
       return request(app)
         .delete(`/api/comments/${id}`)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Not Found");
+        });
+    });
+  });
+
+  describe("PATCH", () => {
+    test("200: When sent a inc_votes object should increment the votes by the amount and respond with updated comment", () => {
+      const id = 2;
+
+      return request(app)
+        .patch(`/api/comments/${id}`)
+        .send({ inc_votes: 5 })
+        .expect(200)
+        .then(({ body }) => {
+          const comment = body.comment;
+
+          expect(comment).toHaveProperty("comment_id", id);
+          expect(comment).toHaveProperty("body");
+          expect(comment).toHaveProperty("article_id");
+          expect(comment).toHaveProperty("author");
+          expect(comment).toHaveProperty("votes", 19);
+          expect(comment).toHaveProperty("created_at");
+        });
+    });
+
+    test("400: Should return bad request when invalid req body value", () => {
+      const id = 2;
+
+      return request(app)
+        .patch(`/api/comments/${id}`)
+        .send({ inc_votes: "cheeese" })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
+
+    test("400: Should return bad request when invalid req body key", () => {
+      const id = 2;
+
+      return request(app)
+        .patch(`/api/comments/${id}`)
+        .send({ incjksk: 234 })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
+
+    test("400: Should return bad request when invalid id", () => {
+      const id = "cheesee";
+
+      return request(app)
+        .patch(`/api/comments/${id}`)
+        .send({ incjksk: 234 })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
+
+    test("404: Should return not found when valid id but not in the database", () => {
+      const id = 20000000;
+
+      return request(app)
+        .patch(`/api/comments/${id}`)
+        .send({ incjksk: 234 })
         .expect(404)
         .then(({ body }) => {
           expect(body.msg).toBe("Not Found");
