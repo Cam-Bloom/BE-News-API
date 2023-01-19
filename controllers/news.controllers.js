@@ -1,4 +1,5 @@
 const {
+  fetchDesc,
   fetchAllTopics,
   fetchAllArticles,
   fetchArticleById,
@@ -8,6 +9,14 @@ const {
   fetchAllUsers,
   removeCommentById,
 } = require("../models/news.models");
+
+function getDesc(req, res, next) {
+  fetchDesc()
+    .then((desc) => {
+      res.status(200).send(desc);
+    })
+    .catch(next);
+}
 
 function getTopics(req, res, next) {
   fetchAllTopics()
@@ -87,6 +96,7 @@ function deleteCommentByCommentId(req, res, next) {
 }
 
 module.exports = {
+  getDesc,
   getTopics,
   getArticles,
   getArticleById,

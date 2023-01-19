@@ -1,5 +1,12 @@
+const fs = require("fs/promises");
 const db = require("../db/connection");
 const { queryFormat } = require("./utils.models");
+
+function fetchDesc() {
+  return fs.readFile(__dirname + "/endpoints.json").then((body) => {
+    return JSON.parse(body);
+  });
+}
 
 function fetchAllTopics() {
   const sqlQuery = `SELECT * FROM topics`;
@@ -113,6 +120,7 @@ function removeCommentById(id) {
 }
 
 module.exports = {
+  fetchDesc,
   fetchAllTopics,
   fetchArticleById,
   fetchAllArticles,
