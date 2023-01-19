@@ -1,5 +1,6 @@
 const express = require("express");
 const {
+  getDesc,
   getTopics,
   getArticles,
   getArticleById,
@@ -13,6 +14,7 @@ const { postgresErr, customErr, internalErr } = require("./errorHandlers");
 const app = express();
 
 app.use(express.json());
+app.get("/api", getDesc);
 app.get("/api/topics", getTopics);
 app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id", getArticleById);

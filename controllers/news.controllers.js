@@ -1,4 +1,5 @@
 const {
+  fetchDesc,
   fetchAllTopics,
   fetchAllArticles,
   fetchArticleById,
@@ -7,6 +8,14 @@ const {
   updateArticleVotes,
   fetchAllUsers,
 } = require("../models/news.models");
+
+function getDesc(req, res, next) {
+  fetchDesc()
+    .then((desc) => {
+      res.status(200).send(desc);
+    })
+    .catch(next);
+}
 
 function getTopics(req, res, next) {
   fetchAllTopics()
@@ -76,6 +85,7 @@ function getUsers(req, res, next) {
 }
 
 module.exports = {
+  getDesc,
   getTopics,
   getArticles,
   getArticleById,
