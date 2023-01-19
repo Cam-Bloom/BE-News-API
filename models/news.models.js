@@ -119,6 +119,17 @@ function removeCommentById(id) {
   });
 }
 
+function fetchUserByUsername(username) {
+  const sqlQuery = `
+  SELECT * 
+  FROM users
+  WHERE username = $1`;
+
+  return db.query(sqlQuery, [username]).then(({ rows: [user] }) => {
+    return user ? user : Promise.reject({ status: 404, msg: "Not Found" });
+  });
+}
+
 module.exports = {
   fetchDesc,
   fetchAllTopics,
@@ -129,4 +140,5 @@ module.exports = {
   updateArticleVotes,
   fetchAllUsers,
   removeCommentById,
+  fetchUserByUsername,
 };
