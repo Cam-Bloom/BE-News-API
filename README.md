@@ -1,51 +1,99 @@
-# Northcoders News API
+# **CB News API**
 
-## Kanban
+[![Technologies Used](https://skillicons.dev/icons?i=js,nodejs,express,postgres,git)](https://skillicons.dev)
 
-### Link to your Trello Board here: https://trello.com/b/7yiHe1nI
+## 📝 **Summary**
 
-To keep track of the tasks involved in this project we're going to use a kanban board. Ensure that you work on one _ticket_ at time. You can click on the ticket to find out more information about what is required for the feature. A ticket is not considered complete unless both the happy path and errors response are handled. You can make use of the checklist on each ticket to keep track of the errors you want to handle. You can also make use of [error-handling.md](error-handling.md) to consider the error codes we may wish to respond with.
+This is an API for news articles🗞️. From this api you can fetch articles, comments and user, post new comments, increment vote counts on articles, delete commen,ts and filter articles via queries.
 
-**Please ensure you work through the tickets in numerical order.**
+### 🔗 API Link
 
-## Git Branching and Pull Requests
-
-You will be working on each ticket on a new **branch**.
-
-To create and switch to a new git branch use the command:
+Use the following link with request paths below to access the api:
 
 ```
-git checkout -b <new branch name>
+https://cb-news-api.onrender.com
 ```
 
-This will create a branch and move over to that branch. (Omit the `-b` flag if you wish to switch to an already existing branch).
+This can be used on platforms such as [Insomia](https://insomnia.rest/) or [Postman](https://www.postman.com/) with the respective paths.
 
-We recommend that you name the branch after the number assigned to each ticket via the header. eg. `ncnews-1`
+### 👣 Paths
 
-When pushing the branch to git hub ensure that you make reference to the branch you are pushing to on the remote.
-
-```
-git push origin <branch name>
-```
-
-From github you can make a pull request and share the link and ticket number via a pull request specific nchelp using the command `nchelp pr`. A tutor will swing by to review your code. Ensure that you keep your trello up to date whilst you await the PR approval. Regular `nchelp` will be available for when you need support.
-
-Once a pull request been accepted be sure to switch back to the main branch and pull down the updated changes.
+Get information on paths by the following request:
 
 ```
-git checkout main
-
-git pull origin main
+https://cb-news-api.onrender.com/api
 ```
 
-You can tidy up your local branches once they have been pull into main by deleting them:
+## 🚀 **Getting Started**
+
+### :octocat: GitHub Forking and Cloning
+
+To get started you must first **fork** this repo, do this by the "fork" button on the top right of the screen.
+
+Once you have forked this repo to our own account you should your own link. Open your terminal and navigate to location where you would like this file, now use the following command with your url:
 
 ```
-git branch -D <local branch>
+git clone <your_url>
 ```
 
-## Husky
+You should now have your own copy of the api which can be opened in your IDE of choice.
 
-To ensure we are not commiting broken code this project makes use of git hooks. Git hooks are scripts triggered during certain events in the git lifecycle. Husky is a popular package which allows us to set up and maintain these scripts. This project makes use a _pre-commit hook_. When we attempt to commit our work, the script defined in the `pre-commit` file will run. If any of our tests fail than the commit will be aborted.
+### npm and Dependancies
 
-The [Husky documentation](https://typicode.github.io/husky/#/) explains how to configure Husky for your own project as well as creating your own custom hooks.\_
+To ensure the code works as designed you will need to install some npm packages this can be all be done by the following command in your terminal
+
+```
+npm install
+```
+
+### ⚙️ .env Files
+
+The api requiries different enviroments for development and testing therefore we need 2 .env files which set envrioment varibles, they are as follows:
+
+### .env.development
+
+After making this file input the following code:
+
+```
+PGDATABASE=nc_news
+```
+
+### .env.test
+
+After making this file input the following code:
+
+```
+PGDATABASE=nc_news_test
+```
+
+### 🌱 Seeding
+
+To seed the database the following commands have to be run, the first will create the PSQL databases the second will seed them from the data files.
+
+```
+npm run setup-dbs
+npm run seed
+```
+
+### 📚 Testing
+
+Now to check if everything is working, to run all test suites run the following in the terminal:
+
+```
+npm test
+```
+
+To run tests only for the app itself run the following in the terminal:
+
+```
+npm test app.test.js
+```
+
+## Versions Used
+
+| Technology | Version |
+| ---------- | ------- |
+| Node JS    | 19.1.0  |
+| PostgreSQL | 8.7.3   |
+| Express    | 4.18.2  |
+| Jest       | 27.5.1  |
