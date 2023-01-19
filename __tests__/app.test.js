@@ -614,3 +614,33 @@ describe("/api/comments/:comment_id", () => {
     });
   });
 });
+
+describe("/api/users/:username", () => {
+  describe("GET", () => {
+    test("200: Should respond with user object with specified id with correct properties", () => {
+      const id = "icellusedkars";
+
+      return request(app)
+        .get(`/api/users/${id}`)
+        .expect(200)
+        .then(({ body }) => {
+          const user = body.user;
+
+          expect(user).toHaveProperty("username", id);
+          expect(user).toHaveProperty("name");
+          expect(user).toHaveProperty("avatar_url");
+        });
+    });
+
+    test("404: Should respond with not found if username cannot be found", () => {
+      const id = "notausername";
+
+      return request(app)
+        .get(`/api/users/${id}`)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Not Found");
+        });
+    });
+  });
+});
