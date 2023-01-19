@@ -146,6 +146,38 @@ function updateCommentVotes(id, { inc_votes }) {
   });
 }
 
+function createNewArticle(body) {
+  const inputValues = [
+    body.author,
+    body.title,
+    body.body,
+    body.topic,
+    body.article_img_url,
+  ];
+
+  const sqlQuery = `
+    INSERT INTO articles
+    ( author, title, body, topic, article_img_url )
+    VALUES
+    ($1, $2, $3, $4, $5)
+    RETURNING *`;
+
+  return db.query(sqlQuery, inputValues).then(({ rows: [article] }) => {
+    return article;
+  });
+}
+
+function fetchTopicBySlug(slug) {
+  const sqlQuery = `
+  SELECT * 
+  FROM topics
+  WHERE slug = $1`;
+
+  return db.query(sqlQuery, [slug]).then(({ rows: [topic] }) => {
+    return topic ? topic : Promise.reject({ status: 404, msg: "Not Found" });
+  });
+}
+
 module.exports = {
   fetchDesc,
   fetchAllTopics,
@@ -158,4 +190,6 @@ module.exports = {
   removeCommentById,
   fetchUserByUsername,
   updateCommentVotes,
+  createNewArticle,
+  fetchTopicBySlug,
 };

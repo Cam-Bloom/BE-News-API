@@ -28,7 +28,7 @@ const internalErr = (err, req, res, next) => {
 
 // CATCH ALL
 const catchAll = (req, res) => {
-  app.status(404).send({ msg: "Bad Request" });
+  res.status(404).send({ msg: "Bad Request" });
 };
 
 module.exports = { postgresErr, customErr, internalErr, catchAll };

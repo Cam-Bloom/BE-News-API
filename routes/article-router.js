@@ -5,11 +5,12 @@ const {
   getCommentsByArticleId,
   postComment,
   patchArticleVotes,
+  postNewArticle,
 } = require("../controllers/news.controllers");
 
 const articleRouter = express.Router();
 
-articleRouter.get("/", getArticles);
+articleRouter.route("/").get(getArticles).post(postNewArticle);
 
 articleRouter
   .route("/:article_id")

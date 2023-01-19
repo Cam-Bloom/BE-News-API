@@ -10,6 +10,8 @@ const {
   removeCommentById,
   fetchUserByUsername,
   updateCommentVotes,
+  createNewArticle,
+  fetchTopicBySlug,
 } = require("../models/news.models");
 
 function getDesc(req, res, next) {
@@ -118,6 +120,32 @@ function patchCommentVotes(req, res, next) {
     .catch(next);
 }
 
+function postNewArticle(req, res, next) {
+  const { body } = req;
+
+  Promise.all([createNewArticle(body), fetchTopicBySlug(body.topic)])
+    .then(([article]) => {
+      return article.article_id;
+    })
+    .then((id) => {
+      return fetchArticleById(id);
+    })
+    .then((article) => {
+      res.status(201).send({ article });
+    })
+    .catch(next);
+}
+
+function getTopicsBySlug(req, res, next) {
+  const { slug } = req.params;
+
+  fetchTopicBySlug(slug)
+    .then((topic) => {
+      res.status(200).send({ topic });
+    })
+    .catch(next);
+}
+
 module.exports = {
   getDesc,
   getTopics,
@@ -130,4 +158,6 @@ module.exports = {
   deleteCommentByCommentId,
   getUserByUsername,
   patchCommentVotes,
+  postNewArticle,
+  getTopicsBySlug,
 };
