@@ -130,6 +130,22 @@ function fetchUserByUsername(username) {
   });
 }
 
+function updateCommentVotes(id, { inc_votes }) {
+  const valueArr = [inc_votes, id];
+
+  const sqlQuery = `
+    UPDATE comments
+    SET votes = votes + $1
+    WHERE comment_id = $2
+    RETURNING *`;
+
+  return db.query(sqlQuery, valueArr).then(({ rows: [updatedComment] }) => {
+    return updatedComment
+      ? updatedComment
+      : Promise.reject({ status: 404, msg: "Not Found" });
+  });
+}
+
 module.exports = {
   fetchDesc,
   fetchAllTopics,
@@ -141,4 +157,5 @@ module.exports = {
   fetchAllUsers,
   removeCommentById,
   fetchUserByUsername,
+  updateCommentVotes,
 };

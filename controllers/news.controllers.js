@@ -9,6 +9,7 @@ const {
   fetchAllUsers,
   removeCommentById,
   fetchUserByUsername,
+  updateCommentVotes,
 } = require("../models/news.models");
 
 function getDesc(req, res, next) {
@@ -106,6 +107,17 @@ function getUserByUsername(req, res, next) {
     .catch(next);
 }
 
+function patchCommentVotes(req, res, next) {
+  const { comment_id: id } = req.params;
+  const { body } = req;
+
+  updateCommentVotes(id, body)
+    .then((comment) => {
+      res.status(200).send({ comment });
+    })
+    .catch(next);
+}
+
 module.exports = {
   getDesc,
   getTopics,
@@ -117,4 +129,5 @@ module.exports = {
   getUsers,
   deleteCommentByCommentId,
   getUserByUsername,
+  patchCommentVotes,
 };
