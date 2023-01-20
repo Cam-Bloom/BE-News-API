@@ -14,8 +14,8 @@ describe("queryFormat", () => {
 
     const output = queryFormat(input);
     const expectedOutput = {
-      valueArr: ["mitch"],
-      sqlString: `WHERE articles.topic = $1GROUP BY articles.article_id ORDER BY created_at DESC;`,
+      valueArr: ["mitch", 10],
+      sqlString: `WHERE articles.topic = $1GROUP BY articles.article_id ORDER BY created_at DESC LIMIT $2`,
     };
 
     expect(output.valueArr).toEqual(expectedOutput.valueArr);
@@ -27,8 +27,8 @@ describe("queryFormat", () => {
 
     const output = queryFormat(input);
     const expectedOutput = {
-      valueArr: [],
-      sqlString: `GROUP BY articles.article_id ORDER BY votes DESC;`,
+      valueArr: [10],
+      sqlString: `GROUP BY articles.article_id ORDER BY votes DESC LIMIT $1`,
     };
 
     expect(output.valueArr).toEqual(expectedOutput.valueArr);
@@ -40,8 +40,8 @@ describe("queryFormat", () => {
 
     const output = queryFormat(input);
     const expectedOutput = {
-      valueArr: [],
-      sqlString: `GROUP BY articles.article_id ORDER BY created_at ASC;`,
+      valueArr: [10],
+      sqlString: `GROUP BY articles.article_id ORDER BY created_at ASC LIMIT $1`,
     };
 
     expect(output.valueArr).toEqual(expectedOutput.valueArr);
@@ -53,8 +53,8 @@ describe("queryFormat", () => {
 
     const output = queryFormat(input);
     const expectedOutput = {
-      valueArr: ["mitch"],
-      sqlString: `WHERE articles.topic = $1GROUP BY articles.article_id ORDER BY votes ASC;`,
+      valueArr: ["mitch", 10],
+      sqlString: `WHERE articles.topic = $1GROUP BY articles.article_id ORDER BY votes ASC LIMIT $2`,
     };
     expect(output.valueArr).toEqual(expectedOutput.valueArr);
     expect(output.sqlString).toEqual(expectedOutput.sqlString);
@@ -78,5 +78,29 @@ describe("queryFormat", () => {
     validationErr.catch((body) => {
       expect(body.msg).toBe("Bad Request");
     });
+  });
+
+  test("When passed a limit should respond with relevant SQL", () => {
+    const input = { limit: 5 };
+
+    const output = queryFormat(input);
+    const expectedOutput = {
+      valueArr: [5],
+      sqlString: `GROUP BY articles.article_id ORDER BY created_at DESC LIMIT $1`,
+    };
+    expect(output.valueArr).toEqual(expectedOutput.valueArr);
+    expect(output.sqlString).toEqual(expectedOutput.sqlString);
+  });
+
+  test("When passed a page should respond with relevant SQL", () => {
+    const input = { limit: 5, p: 2 };
+
+    const output = queryFormat(input);
+    const expectedOutput = {
+      valueArr: [5, 5],
+      sqlString: `GROUP BY articles.article_id ORDER BY created_at DESC LIMIT $1 OFFSET $2`,
+    };
+    expect(output.valueArr).toEqual(expectedOutput.valueArr);
+    expect(output.sqlString).toEqual(expectedOutput.sqlString);
   });
 });

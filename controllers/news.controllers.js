@@ -32,9 +32,14 @@ function getTopics(req, res, next) {
 
 function getArticles(req, res, next) {
   const { query } = req;
-  fetchAllArticles(query)
-    .then((articles) => {
-      res.status(200).send({ articles });
+  const totalQueryCopy = { ...query };
+  totalQueryCopy.total = true;
+
+  Promise.all([fetchAllArticles(query), fetchAllArticles(totalQueryCopy)])
+    .then(([articles, totalArticles]) => {
+      const total_count = totalArticles.length - articles.length;
+
+      res.status(200).send({ articles, total_count });
     })
     .catch(next);
 }
