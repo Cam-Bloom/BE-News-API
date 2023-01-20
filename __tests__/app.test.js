@@ -302,6 +302,64 @@ describe("/api/articles", () => {
           expect(body.msg).toBe("Not Found");
         });
     });
+
+    test("200: Should return the query with limit default of 10 results", () => {
+      return request(app)
+        .get("/api/articles?limit=5")
+        .expect(200)
+        .then(({ body }) => {
+          const articleArr = body.articles;
+
+          expect(articleArr.length).toBe(5);
+        });
+    });
+
+    test("200: Should return the query with p which represents the page number", () => {
+      return request(app)
+        .get("/api/articles?limit=10&p=2")
+        .expect(200)
+        .then(({ body }) => {
+          const articleArr = body.articles;
+
+          expect(articleArr.length).toBe(2);
+        });
+    });
+
+    test("200: Should return with a property of total count", () => {
+      return request(app)
+        .get("/api/articles?limit=10&p=2")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body).toHaveProperty("total_count", 10);
+        });
+    });
+
+    test("400: Should return bad request for invalid limit", () => {
+      return request(app)
+        .get("/api/articles?limit=cheese")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
+
+    test("400: Should return bad request for invalid page", () => {
+      return request(app)
+        .get("/api/articles?p=cheese")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
+
+    test("404: Should return not found for a page number which does not contain any articles", () => {
+      return request(app)
+        .get("/api/articles?p=100000000")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Not Found");
+        });
+    });
   });
 
   describe("POST", () => {
