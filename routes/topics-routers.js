@@ -3,9 +3,10 @@ const topicsRouter = express.Router();
 const {
   getTopics,
   getTopicsBySlug,
+  postTopic,
 } = require("../controllers/news.controllers");
 
-topicsRouter.get("/", getTopics);
+topicsRouter.route("/").get(getTopics).post(postTopic);
 
 topicsRouter.get("/:slug", getTopicsBySlug);
 

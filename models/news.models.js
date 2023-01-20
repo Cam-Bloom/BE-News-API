@@ -195,12 +195,27 @@ function createNewArticle(body) {
 
 function fetchTopicBySlug(slug) {
   const sqlQuery = `
-  SELECT * 
-  FROM topics
-  WHERE slug = $1`;
+    SELECT * 
+    FROM topics
+    WHERE slug = $1`;
 
   return db.query(sqlQuery, [slug]).then(({ rows: [topic] }) => {
     return topic ? topic : Promise.reject({ status: 404, msg: "Not Found" });
+  });
+}
+
+function createNewTopic(body) {
+  const valueArr = [body.slug, body.description];
+
+  sqlQuery = `
+    INSERT INTO topics
+    ( slug, description )
+    VALUES
+    ($1, $2)
+    RETURNING *`;
+
+  return db.query(sqlQuery, valueArr).then(({ rows: [topic] }) => {
+    return topic;
   });
 }
 
@@ -218,4 +233,5 @@ module.exports = {
   updateCommentVotes,
   createNewArticle,
   fetchTopicBySlug,
+  createNewTopic,
 };
