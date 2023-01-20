@@ -52,16 +52,42 @@ function fetchArticleById(id) {
   });
 }
 
-function fetchCommentsByArticleId(id) {
-  const sqlQuery = `
+function fetchCommentsByArticleId(id, { limit = 10, p }) {
+  const valueArr = [id, limit];
+  let paramCounter = 1;
+
+  let sqlQuery = `
   SELECT * 
   FROM comments
-  WHERE article_id = $1
-  ORDER BY created_at DESC;
+  WHERE article_id = $${paramCounter++}
+  ORDER BY created_at DESC
+  LIMIT $${paramCounter++}
   `;
-  return db.query(sqlQuery, [id]).then(({ rows: comments, rowCount }) => {
-    return comments;
-  });
+
+  if (p) {
+    sqlQuery += ` OFFSET $${paramCounter++}`;
+    const offsetNum = p * limit - limit;
+    valueArr.push(offsetNum);
+  }
+
+  return db
+    .query(sqlQuery, valueArr)
+    .then(({ rows: comments, rowCount }) => {
+      if (rowCount > 0) return { comments };
+
+      sqlQuery = `SELECT * 
+      FROM comments
+      WHERE article_id = $1`;
+
+      return db.query(sqlQuery, [id]);
+    })
+    .then(({ comments, rowCount }) => {
+      if (comments) return comments;
+
+      return rowCount === 0
+        ? []
+        : Promise.reject({ status: 404, msg: "Not Found" });
+    });
 }
 
 function createComment(id, body) {
