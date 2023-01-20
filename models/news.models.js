@@ -219,6 +219,20 @@ function createNewTopic(body) {
   });
 }
 
+function removeArticleById(id) {
+  let sqlQuery = `
+    DELETE FROM comments
+    WHERE article_id = $1`;
+
+  return db.query(sqlQuery, [id]).then(() => {
+    sqlQuery = `
+    DELETE FROM articles
+    WHERE article_id = $1`;
+
+    return db.query(sqlQuery, [id]);
+  });
+}
+
 module.exports = {
   fetchDesc,
   fetchAllTopics,
@@ -234,4 +248,5 @@ module.exports = {
   createNewArticle,
   fetchTopicBySlug,
   createNewTopic,
+  removeArticleById,
 };

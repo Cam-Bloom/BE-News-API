@@ -13,6 +13,7 @@ const {
   createNewArticle,
   fetchTopicBySlug,
   createNewTopic,
+  removeArticleById,
 } = require("../models/news.models");
 
 function getDesc(req, res, next) {
@@ -163,6 +164,16 @@ function postTopic(req, res, next) {
     .catch(next);
 }
 
+function deleteArticleByArticleId(req, res, next) {
+  const { article_id: id } = req.params;
+
+  Promise.all([removeArticleById(id), fetchArticleById(id)])
+    .then(() => {
+      res.status(204).send();
+    })
+    .catch(next);
+}
+
 module.exports = {
   getDesc,
   getTopics,
@@ -178,4 +189,5 @@ module.exports = {
   postNewArticle,
   getTopicsBySlug,
   postTopic,
+  deleteArticleByArticleId,
 };

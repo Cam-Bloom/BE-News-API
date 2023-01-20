@@ -589,6 +589,44 @@ describe("/api/articles/:article_id", () => {
         });
     });
   });
+
+  describe("DELETE", () => {
+    test("204: Should remove an article from database by Id", () => {
+      const id = 1;
+
+      return request(app)
+        .delete(`/api/articles/${id}`)
+        .expect(204)
+        .then(() => {
+          return db.query(`SELECT * FROM articles WHERE article_id = ${id}`);
+        })
+        .then(({ rowCount }) => {
+          expect(rowCount).toBe(0);
+        });
+    });
+
+    test("400: Should return bad request for invalid id", () => {
+      const id = "cheeezxe";
+
+      return request(app)
+        .delete(`/api/articles/${id}`)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
+
+    test("404: Should return not found for an id that does not exist", () => {
+      const id = 999999;
+
+      return request(app)
+        .delete(`/api/articles/${id}`)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Not Found");
+        });
+    });
+  });
 });
 
 describe("/api/articles/:article_id/comments", () => {
