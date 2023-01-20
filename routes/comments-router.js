@@ -10,6 +10,4 @@ commentsRouter
   .delete(deleteCommentByCommentId)
   .patch(patchCommentVotes);
 
-//patch body
-
 module.exports = commentsRouter;

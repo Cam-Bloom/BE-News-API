@@ -3,14 +3,14 @@ const usersRouter = express.Router();
 const {
   getUsers,
   getUserByUsername,
+  postUser,
 } = require("../controllers/news.controllers");
 
-usersRouter.get("/", getUsers);
+usersRouter.route("/").get(getUsers).post(postUser);
 
 usersRouter.get("/:username", getUserByUsername);
 
 //post
 //delete
-//query LIKE
 
 module.exports = usersRouter;
