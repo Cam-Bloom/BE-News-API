@@ -233,6 +233,21 @@ function removeArticleById(id) {
   });
 }
 
+function createNewUser(body) {
+  const valueArr = [body.username, body.name, body.avatar_url];
+
+  const sqlQuery = `
+  INSERT INTO users
+  (username, name, avatar_url)
+  VALUES
+  ($1, $2, $3)
+  RETURNING *`;
+
+  return db.query(sqlQuery, valueArr).then(({ rows: [user] }) => {
+    return user;
+  });
+}
+
 module.exports = {
   fetchDesc,
   fetchAllTopics,
@@ -249,4 +264,5 @@ module.exports = {
   fetchTopicBySlug,
   createNewTopic,
   removeArticleById,
+  createNewUser,
 };

@@ -42,7 +42,7 @@ describe("/api", () => {
             },
 
             "GET /api/articles": {
-              description: "serves an array of all topics",
+              description: "serves an array of all articles",
               queries: ["topic", "sort_by", "order", "limit", "p", "total"],
               exampleResponse: {
                 articles: [
@@ -894,6 +894,28 @@ describe("/api/users", () => {
             expect(topic).toHaveProperty("username");
             expect(topic).toHaveProperty("name");
             expect(topic).toHaveProperty("avatar_url");
+          });
+        });
+    });
+  });
+
+  describe("POST", () => {
+    test("201: Should create a new user and return the object", () => {
+      return request(app)
+        .post("/api/users")
+        .send({
+          username: "cammy_B",
+          name: "Cam",
+          avatar_url: "www.googole.com",
+        })
+        .expect(201)
+        .then(({ body }) => {
+          const newUser = body.user;
+
+          expect(newUser).toEqual({
+            username: "cammy_B",
+            name: "Cam",
+            avatar_url: "www.googole.com",
           });
         });
     });

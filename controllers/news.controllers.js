@@ -14,6 +14,7 @@ const {
   fetchTopicBySlug,
   createNewTopic,
   removeArticleById,
+  createNewUser,
 } = require("../models/news.models");
 
 function getDesc(req, res, next) {
@@ -174,6 +175,16 @@ function deleteArticleByArticleId(req, res, next) {
     .catch(next);
 }
 
+function postUser(req, res, next) {
+  const { body } = req;
+
+  createNewUser(body)
+    .then((user) => {
+      res.status(201).send({ user });
+    })
+    .catch(next);
+}
+
 module.exports = {
   getDesc,
   getTopics,
@@ -190,4 +201,5 @@ module.exports = {
   getTopicsBySlug,
   postTopic,
   deleteArticleByArticleId,
+  postUser,
 };
