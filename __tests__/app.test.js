@@ -183,6 +183,47 @@ describe("/api/topics", () => {
         });
     });
   });
+
+  describe("POST", () => {
+    test("201: Should create a new topic with slug and description", () => {
+      return request(app)
+        .post("/api/topics")
+        .send({
+          slug: "New Topic",
+          description: "Amazing new topic",
+        })
+        .then(({ body }) => {
+          const topic = body.topic;
+
+          expect(topic).toHaveProperty("slug");
+          expect(topic).toHaveProperty("description");
+        });
+    });
+
+    test("400: Should return bad request for error in the key", () => {
+      return request(app)
+        .post("/api/topics")
+        .send({
+          sug: "New Topic",
+          description: "Amazing new topic",
+        })
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
+
+    test("400: Should return bad request for undefined in the value", () => {
+      return request(app)
+        .post("/api/topics")
+        .send({
+          slug: undefined,
+          description: "Amazing new topic",
+        })
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
+  });
 });
 
 describe("/api/topics/:slug", () => {

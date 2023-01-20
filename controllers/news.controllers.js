@@ -12,6 +12,7 @@ const {
   updateCommentVotes,
   createNewArticle,
   fetchTopicBySlug,
+  createNewTopic,
 } = require("../models/news.models");
 
 function getDesc(req, res, next) {
@@ -152,6 +153,16 @@ function getTopicsBySlug(req, res, next) {
     .catch(next);
 }
 
+function postTopic(req, res, next) {
+  const { body } = req;
+
+  createNewTopic(body)
+    .then((topic) => {
+      res.status(201).send({ topic });
+    })
+    .catch(next);
+}
+
 module.exports = {
   getDesc,
   getTopics,
@@ -166,4 +177,5 @@ module.exports = {
   patchCommentVotes,
   postNewArticle,
   getTopicsBySlug,
+  postTopic,
 };
