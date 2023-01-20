@@ -33,9 +33,17 @@ describe("/api", () => {
                 topics: [{ slug: "football", description: "Footie!" }],
               },
             },
+            "GET /api/topics/:slug": {
+              description: "serves an array of a topic by slug",
+              queries: [],
+              exampleResponse: {
+                topics: [{ slug: "football", description: "Footie!" }],
+              },
+            },
+
             "GET /api/articles": {
               description: "serves an array of all topics",
-              queries: ["topic", "sort_by", "order"],
+              queries: ["topic", "sort_by", "order", "limit", "p", "total"],
               exampleResponse: {
                 articles: [
                   {
@@ -46,6 +54,25 @@ describe("/api", () => {
                     created_at: 1527695953341,
                   },
                 ],
+              },
+            },
+
+            "POST /api/articles": {
+              description: "Creates a new article",
+              queries: [],
+              exampleResponse: {
+                article: {
+                  author: "icellusedkars",
+                  title: "Eight pug gifs that remind me of mitch",
+                  article_id: 3,
+                  body: "some gifs",
+                  topic: "mitch",
+                  created_at: "2020-11-03T09:12:00.000Z",
+                  votes: 0,
+                  article_img_url:
+                    "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+                  comment_count: 2,
+                },
               },
             },
             "GET /api/articles/:article_id": {
@@ -67,7 +94,7 @@ describe("/api", () => {
               },
             },
             "PATCH /api/articles/:article_id": {
-              description: "Increments a comments vote count",
+              description: "Increments a articles vote count",
               queries: [],
               exampleResponse: {
                 article: {
@@ -83,9 +110,14 @@ describe("/api", () => {
                 },
               },
             },
+            "DELETE /api/articles/:article_id": {
+              description: "Deletes a comment by specificed id",
+              queries: [],
+              exampleResponse: {},
+            },
             "GET /api/articles/:article_id/comments": {
               description: "serves an comments from article id",
-              queries: [],
+              queries: ["limit", "p"],
               exampleResponse: {
                 comments: [
                   {
@@ -157,6 +189,20 @@ describe("/api", () => {
               description: "Deletes a comment by a specific id",
               queries: [],
               exampleResponse: {},
+            },
+            "PATCH /api/comments/:comment_id": {
+              description: "Increments a comments vote count",
+              queries: [],
+              exampleResponse: {
+                comment: {
+                  comment_id: 2,
+                  body: "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+                  article_id: 1,
+                  author: "butter_bridge",
+                  votes: 19,
+                  created_at: "2020-10-31T03:03:00.000Z",
+                },
+              },
             },
           };
           expect(body).toEqual(expected);
@@ -627,9 +673,6 @@ describe("/api/articles/:article_id", () => {
         });
     });
   });
-});
-
-describe("/api/articles/:article_id/comments", () => {
   describe("GET", () => {
     test("200: Should respond with comment objects with relevent properties for a passed article parameter", () => {
       const id = 3;

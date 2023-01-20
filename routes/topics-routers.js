@@ -10,4 +10,7 @@ topicsRouter.route("/").get(getTopics).post(postTopic);
 
 topicsRouter.get("/:slug", getTopicsBySlug);
 
+//delete
+//patch
+
 module.exports = topicsRouter;

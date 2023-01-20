@@ -9,4 +9,8 @@ usersRouter.get("/", getUsers);
 
 usersRouter.get("/:username", getUserByUsername);
 
+//post
+//delete
+//query LIKE
+
 module.exports = usersRouter;
