@@ -552,7 +552,7 @@ describe("/api/articles/:article_id", () => {
 
 describe("/api/articles/:article_id/comments", () => {
   describe("GET", () => {
-    test("200: Should respond with comment objects with relevent properties for a passed articel parameter", () => {
+    test("200: Should respond with comment objects with relevent properties for a passed article parameter", () => {
       const id = 3;
 
       return request(app)
@@ -606,6 +606,65 @@ describe("/api/articles/:article_id/comments", () => {
 
       return request(app)
         .get(`/api/articles/${id}/comments`)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Not Found");
+        });
+    });
+
+    test("200: Should accept a limit query for the results", () => {
+      const id = 1;
+
+      return request(app)
+        .get(`/api/articles/${id}/comments?limit=5`)
+        .expect(200)
+        .then(({ body }) => {
+          const commentsArr = body.comments;
+
+          expect(commentsArr.length).toBe(5);
+        });
+    });
+
+    test("200: Should accept a page query for the results", () => {
+      const id = 1;
+
+      return request(app)
+        .get(`/api/articles/${id}/comments?p=4&limit=3`)
+        .expect(200)
+        .then(({ body }) => {
+          const commentsArr = body.comments;
+
+          expect(commentsArr.length).toBe(2);
+        });
+    });
+
+    test("400: Should return bad request for invalid limit amount", () => {
+      const id = 1;
+
+      return request(app)
+        .get(`/api/articles/${id}/comments?limit=chheeeeze`)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
+
+    test("400: Should return bad request for invalid page amount", () => {
+      const id = 1;
+
+      return request(app)
+        .get(`/api/articles/${id}/comments?p=chheeeeze`)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
+
+    test("404: Should return not found for page number higher that would exceed the number of comments", () => {
+      const id = 1;
+
+      return request(app)
+        .get(`/api/articles/${id}/comments?p=999`)
         .expect(404)
         .then(({ body }) => {
           expect(body.msg).toBe("Not Found");
