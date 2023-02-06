@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require('cors');
 const { getDesc } = require("./controllers/news.controllers");
 const {
   postgresErr,
@@ -15,6 +16,7 @@ const {
 
 const app = express();
 
+app.use(cors()); 
 app.use(express.json());
 app.get("/api", getDesc);
 app.use("/api/topics", topicsRouter);
