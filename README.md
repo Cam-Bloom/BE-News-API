@@ -1,6 +1,6 @@
 # **CB News API**
 
-[![Technologies Used](https://skillicons.dev/icons?i=js,nodejs,express,postgres,git)](https://skillicons.dev)
+[![Technologies Used](https://skillicons.dev/icons?i=js,nodejs,express,postgres,git,jest)](https://skillicons.dev)
 
 ## 📝 **Summary**
 
